@@ -4,7 +4,8 @@ title: 使用Github Pages建独立博客
 description: Github本身就是不错的代码社区，他也提供了一些其他的服务，比如Github Pages，使用它可以很方便的建立自己的独立博客，并且免费。
 category: blog
 ---
-
+本人在最初本打算原生搭建blog，可惜发现在windows+墙的阻碍下实现 有点困难，遂暂时选择了github page托管。
+### why Github?
 [Github][]很好的将代码和社区联系在了一起，于是发生了很多有趣的事情，世界也因为他美好了一点点。Github作为现在最流行的代码仓库，已经得到很多大公司和项目的青睐，比如[jQuery][]、[Twitter][]等。为使项目更方便的被人理解，介绍页面少不了，甚至会需要完整的文档站，Github替你想到了这一点，他提供了[Github Pages][]的服务，不仅可以方便的为项目建立介绍站点，也可以用来建立个人博客。
 
 Github Pages有以下几个优点：
@@ -23,25 +24,22 @@ Github Pages有以下几个优点：
 * 动态程序的部分相当局限，比如没有评论，不过还好我们有解决方案。
 * 基于Git，很多东西需要动手，不像Wordpress有强大的后台
 
-大致介绍到此，作为个人博客来说，简洁清爽的表达自己的工作、心得，就已达目标，所以Github Pages是我认为此需求最完美的解决方案了。
 
 ## 购买、绑定独立域名
-虽说[Godaddy][]曾支持过SOPA，并且首页放着极其不专业的大胸美女，但是作为域名服务商他做的还不赖，选择它最重要的原因是他支持支付宝，没有信用卡有时真的很难过。
-
-域名的购买不用多讲，注册、选域名、支付，有网购经验的都毫无压力，优惠码也遍地皆是。域名的配置需要提醒一下，因为伟大英明的GFW的存在，我们必须多做些事情。
-
-流传Godaddy的域名解析服务器被墙掉，导致域名无法访问，后来这个事情在[BeiYuu][]也发生了，不得已需要把域名解析服务迁移到国内比较稳定的服务商处，这个迁移对于域名来说没有什么风险，最终的控制权还是在Godaddy那里，你随时都可以改回去。
-
+翻看了知乎推狗爹的比较多[Godaddy][]，但本人因为信息导论课的原因顺手在腾讯云上买了，功能基本也能应付。至于域名解析，
 我们选择[DNSPod][]的服务，他们的产品做得不错，易用、免费，收费版有更高端的功能，暂不需要。注册登录之后，按照DNSPod的说法，只需三步（我们插入一步）：
 
 <ul>
 	<li>首先添加域名记录，可参考DNSPod的帮助文档：<a href="https://www.dnspod.cn/Support">https://www.dnspod.cn/Support</a></li>
-	<li>在DNSPod自己的域名下添加一条<a href="http://baike.baidu.com/view/65575.htm">A记录</a>，地址就是Github Pages的服务IP地址：207.97.227.245</li>
+	<li>在DNSPod自己的域名下添加两条<a href="http://baike.baidu.com/view/65575.htm">A记录</a>，地址就是Github Pages的服务IP地址：192.30.252.153_
+192.30.252.154（感谢Thomas Baillie大神的指导) 
+</li>
 	<li>在域名注册商处修改DNS服务:去Godaddy修改Nameservers为这两个地址：f1g1ns1.dnspod.net、f1g1ns2.dnspod.net。如果你不明白在哪里修改，可以参考这里：<a href="https://www.dnspod.cn/support/index/fid/119">Godaddy注册的域名如何使用DNSPod</a></li>
+	
 	<li>等待域名解析生效</li>
 </ul>
 
-域名的配置部分完成，跪谢方校长。
+
 
 ## 配置和使用Github
 Git是版本管理的未来，他的优点我不再赘述，相关资料很多。推荐这本[Git中文教程][4]。
@@ -50,122 +48,32 @@ Git是版本管理的未来，他的优点我不再赘述，相关资料很多�
 
 下载安装客户端之后，各个系统的配置就类似了，我们使用windows作为例子，Linux和Mac与此类似。
 
-在Windows下，打开Git Bash，其他系统下面则打开终端（Terminal）：
-![Git Bash](/images/githubpages/bootcamp_1_win_gitbash.jpg)
-
-### 1、检查SSH keys的设置
-首先我们需要检查你电脑上现有的ssh key：
-
-    $ cd ~/.ssh
-
-如果显示“No such file or directory”，跳到第三步，否则继续。
-
-### 2、备份和移除原来的ssh key设置：
-因为已经存在key文件，所以需要备份旧的数据并删除：
-
-    $ ls
-    config	id_rsa	id_rsa.pub	known_hosts
-    $ mkdir key_backup
-    $ cp id_rsa* key_backup
-    $ rm id_rsa*
-
-### 3、生成新的SSH Key：
-输入下面的代码，就可以生成新的key文件，我们只需要默认设置就好，所以当需要输入文件名的时候，回车就好。
-
-    $ ssh-keygen -t rsa -C "邮件地址@youremail.com"
-    Generating public/private rsa key pair.
-    Enter file in which to save the key (/Users/your_user_directory/.ssh/id_rsa):<回车就好>
-
-然后系统会要你输入加密串（[Passphrase][6]）：
-
-    Enter passphrase (empty for no passphrase):<输入加密串>
-    Enter same passphrase again:<再次输入加密串>
-
-最后看到这样的界面，就成功设置ssh key了：
-![ssh key success](/images/githubpages/ssh-key-set.png)
-
-### 4、添加SSH Key到GitHub：
-在本机设置SSH Key之后，需要添加到GitHub上，以完成SSH链接的设置。
-
-用文本编辑工具打开id_rsa.pub文件，如果看不到这个文件，你需要设置显示隐藏文件。准确的复制这个文件的内容，才能保证设置的成功。
-
-在GitHub的主页上点击设置按钮：
-![github account setting](/images/githubpages/github-account-setting.png)
-
-选择SSH Keys项，把复制的内容粘贴进去，然后点击Add Key按钮即可：
-![set ssh keys](/images/githubpages/bootcamp_1_ssh.jpg)
-
-PS：如果需要配置多个GitHub账号，可以参看这个[多个github帐号的SSH key切换](http://omiga.org/blog/archives/2269)，不过需要提醒一下的是，如果你只是通过这篇文章中所述配置了Host，那么你多个账号下面的提交用户会是一个人，所以需要通过命令`git config --global --unset user.email`删除用户账户设置，在每一个repo下面使用`git config --local user.email '你的github邮箱@mail.com'` 命令单独设置用户账户信息
-
-### 5、测试一下
-可以输入下面的命令，看看设置是否成功，`git@github.com`的部分不要修改：
-
-    $ ssh -T git@github.com
+在Windows下，打开Git Bash，其他系统下面则打开终端（Terminal）。
+然后具体教程就不多赘述了，可以看看我的学长[廖雪峰][]的博客,或者自己找找适合自己的。
 
 
-如果是下面的反应：
-
-    The authenticity of host 'github.com (207.97.227.239)' can't be established.
-    RSA key fingerprint is 16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48.
-    Are you sure you want to continue connecting (yes/no)?
-
-
-不要紧张，输入`yes`就好，然后会看到：
-
-    Hi <em>username</em>! You've successfully authenticated, but GitHub does not provide shell access.
-
-### 6、设置你的账号信息
-现在你已经可以通过SSH链接到GitHub了，还有一些个人信息需要完善的。
-
-Git会根据用户的名字和邮箱来记录提交。GitHub也是用这些信息来做权限的处理，输入下面的代码进行个人信息的设置，把名称和邮箱替换成你自己的，名字必须是你的真名，而不是GitHub的昵称。
-
-    $ git config --global user.name "你的名字"
-    $ git config --global user.email "your_email@youremail.com"
-
-#### 设置GitHub的token
-
-2012-4-28补充：新版的接口已经不需要配置token了，所以下面这段可以跳过了
-
-有些工具没有通过SSH来链接GitHub。如果要使用这类工具，你需要找到然后设置你的API Token。
-
-在GitHub上，你可以点击*Account Setting > Account Admin*：
-![set ssh keys](/images/githubpages/bootcamp_1_token.jpg)
-
-然后在你的命令行中，输入下面的命令，把token添加进去：
-
-    $ git config --global user.name "你的名字"
-    $ git config --global user.token 0123456789your123456789token
-
-如果你改了GitHub的密码，需要重新设置token。
-
-### 成功了
-好了，你已经可以成功连接GitHub了。
 
 ## 使用GitHub Pages建立博客
 与GitHub建立好链接之后，就可以方便的使用它提供的Pages服务，GitHub Pages分两种，一种是你的GitHub用户名建立的`username.github.io`这样的用户&组织页（站），另一种是依附项目的pages。
 
 ### User & Organization Pages
-想建立个人博客是用的第一种，形如`beiyuu.github.io`这样的可访问的站，每个用户名下面只能建立一个，创建之后点击`Admin`进入项目管理，可以看到是这样的：
-![user pages](/images/githubpages/user-pages.png)
-而普通的项目是这样的，即使你也是用的`othername.github.io`：
-![other pages](/images/githubpages/other-pages.png)
-
+想建立个人博客是用的第一种，形如`eggwardhan.github.io`这样的可访问的站，每个用户名下面只能建立一个.
 创建好`username.github.io`项目之后，提交一个`index.html`文件，然后`push`到GitHub的`master`分支（也就是普通意义上的主干）。第一次页面生效需要一些时间，大概10分钟左右。
 
-生效之后，访问`username.github.io`就可以看到你上传的页面了，[beiyuu.github.io][7]就是一个例子。
+生效之后，访问`username.github.io`就可以看到你上传的页面了，[eggwardhan.github.io][7]就是一个例子。
 
 关于第二种项目`pages`，简单提一下，他和用户pages使用的后台程序是同一套，只不过它的目的是项目的帮助文档等跟项目绑定的内容，所以需要在项目的`gh-pages`分支上去提交相应的文件，GitHub会自动帮你生成项目pages。具体的使用帮助可以参考[Github Pages][]的官方文档：
 
 ### 绑定域名
 我们在第一部分就提到了在DNS部分的设置，再来看在GitHub的配置，要想让`username.github.io`能通过你自己的域名来访问，需要在项目的根目录下新建一个名为`CNAME`的文件，文件内容形如：
 
-    beiyuu.com
+    eggwardhan.com
 
 你也可以绑定在二级域名上：
 
-    blog.beiyuu.com
+    blog.eggwardhan.com
 
-需要提醒的一点是，如果你使用形如`beiyuu.com`这样的一级域名的话，需要在DNS处设置A记录到`207.97.227.245`（**这个地址会有变动，[这里][a-record]查看**），而不是在DNS处设置为CNAME的形式，否则可能会对其他服务（比如email）造成影响。
+需要提醒的一点是，如果你使用形如`eggwardhan.com`这样的一级域名的话，需要在DNS处设置A记录到，而不是在DNS处设置为CNAME的形式，否则可能会对其他服务（比如email）造成影响。
 
 设置成功后，根据DNS的情况，最长可能需要一天才能生效，耐心等待吧。
 
@@ -180,6 +88,7 @@ Jekyll的核心其实就是一个文本的转换引擎，用你最喜欢的标�
 基本的Jekyll结构如下：
 
     |-- _config.yml
+    |-- _draft
     |-- _includes
     |-- _layouts
     |   |-- default.html
@@ -187,32 +96,52 @@ Jekyll的核心其实就是一个文本的转换引擎，用你最喜欢的标�
     |-- _posts
     |   |-- 2007-10-29-why-every-programmer-should-play-nethack.textile
     |   `-- 2009-04-26-barcamp-boston-4-roundup.textile
+    |-- _data
     |-- _site
     `-- index.html
 
 
-简单介绍一下他们的作用：
+来看看这些都有什么用：
 
-#### _config.yml
+### _config.yml
 
-配置文件，用来定义你想要的效果，设置之后就不用关心了。
+保存配置数据。很多配置选项都会直接从命令行中进行设置，但是如果你把那些配置写在这儿，你就不用非要去记住那些命令了。
 
-#### _includes
-可以用来存放一些小的可复用的模块，方便通过`{ % include file.ext %}`（去掉前两个{中或者{与%中的空格，下同）灵活的调用。这条命令会调用_includes/file.ext文件。
+### _drafts
 
-#### _layouts
-这是模板文件存放的位置。模板需要通过[YAML front matter][9]来定义，后面会讲到，`{ { content }}`标记用来将数据插入到这些模板中来。
+drafts 是未发布的文章。这些文件的格式中都没有 title.MARKUP 数据。学习如何使用 drafts.
 
-#### _posts
-你的动态内容，一般来说就是你的博客正文存放的文件夹。他的命名有严格的规定，必须是`2012-02-22-artical-title.MARKUP`这样的形式，MARKUP是你所使用标记语言的文件后缀名，根据_config.yml中设定的链接规则，可以根据你的文件名灵活调整，文章的日期和标记语言后缀与文章的标题的独立的。
+### _includes
 
-#### _site
-这个是Jekyll生成的最终的文档，不用去关心。最好把他放在你的`.gitignore`文件中忽略它。
+你可以加载这些包含部分到你的布局或者文章中以方便重用。可以用这个标签  {% include file.ext %} 来把文件 _includes/file.ext 包含进来。
 
-#### 其他文件夹
+### _layouts
+
+layouts 是包裹在文章外部的模板。布局可以在 YAML 头信息中根据不同文章进行选择。 这将在下一个部分进行介绍。标签  {{ content }} 可以将content插入页面中。
+
+### _posts
+
+这里放的就是你的文章了。文件格式很重要，必须要符合: YEAR-MONTH-DAY-title.MARKUP。 The permalinks 可以在文章中自己定制，但是数据和标记语言都是根据文件名来确定的。
+
+### _data
+
+Well-formatted site data should be placed here. The jekyll engine will autoload all yaml files (ends with .yml or .yaml) in this directory. If there's a file members.yml under the directory, then you can access contents of the file through site.data.members.
+
+### _site
+
+一旦 Jekyll 完成转换，就会将生成的页面放在这里（默认）。最好将这个目录放进你的 .gitignore 文件中。
+
+### index.html and other HTML, Markdown, Textile files
+
+如果这些文件中包含 YAML 头信息 部分，Jekyll 就会自动将它们进行转换。当然，其他的如 .html， .markdown，  .md，或者 .textile 等在你的站点根目录下或者不是以上提到的目录中的文件也会被转换。
+
+### Other Files/Folders
+
+其他一些未被提及的目录和文件如  css 还有 images 文件夹， favicon.ico 等文件都将被完全拷贝到生成的 site 中.
+
 你可以创建任何的文件夹，在根目录下面也可以创建任何文件，假设你创建了`project`文件夹，下面有一个`github-pages.md`的文件，那么你就可以通过`yoursite.com/project/github-pages`访问的到，如果你是使用一级域名的话。文件后缀可以是`.html`或者`markdown`或者`textile`。这里还有很多的例子：[https://github.com/mojombo/jekyll/wiki/Sites](https://github.com/mojombo/jekyll/wiki/Sites)
 
-### Jekyll的配置
+## Jekyll的配置
 Jekyll的配置写在_config.yml文件中，可配置项有很多，我们不去一一追究了，很多配置虽有用但是一般不需要去关心，[官方配置文档][10]有很详细的说明，确实需要了可以去这里查，我们主要说两个比较重要的东西，一个是`Permalink`，还有就是自定义项。
 
 `Permalink`项用来定义你最终的文章链接是什么形式，他有下面几个变量：
@@ -227,15 +156,15 @@ Jekyll的配置写在_config.yml文件中，可配置项有很多，我们不去
 
 看看最终的配置效果：
 
-* `permalink: pretty` /2009/04/29/slap-chop/index.html
-* `permalink: /:month-:day-:year/:title.html` /04-29-2009/slap-chop.html
-* `permalink: /blog/:year/:month/:day/:title` /blog/2009/04/29/slap-chop/index.html
+* `permalink: pretty` /2018/01/1/slap-chop/index.html
+* `permalink: /:month-:day-:year/:title.html` /01-01-2018/slap-chop.html
+* `permalink: /blog/:year/:month/:day/:title` /blog/2017/12/31/slap-chop/index.html
 
 我使用的是：
 
 * `permalink: /:title` /github-pages
 
-自定义项的内容，例如我们定义了`title:BeiYuu的博客`这样一项，那么你就可以在文章中使用`{ { site.title }}`来引用这个变量了，非常方便定义些全局变量。
+自定义项的内容，例如我们定义了`title:eggward的博客`这样一项，那么你就可以在文章中使用`{ { site.title }}`来引用这个变量了，非常方便定义些全局变量。
 
 ### YAML Front Matter和模板变量
 对于使用YAML定义格式的文章，Jekyll会特别对待，他的格式要求比较严格，必须是这样的形式：
@@ -327,15 +256,13 @@ Google的高亮插件使用也比较方便，只需要在`<pre>`的标签上加�
 
 这个时候，你就可以通过`localhost:4000`来访问了。还有关于[jekyll bootstrap][17]的资料，需要自己修改调试的，可以研究一下。
 
-我在这个过程中还遇到两个诡异的没有解决的问题，一个是我放在根目录下面的blog.md等文件，在GitHub的pages服务上一切正常，可以通过`beiyuu.com/blog`访问的到，但是在本地环境下，总是`not found`，很是让人郁闷，看生成的`_site`目录下面的文件，也是正常的`blog.html`，但就是找不到，只有当我把URL改为`localhost:4000/blog.html`的时候，才能访问的到，环境不同真糟糕。
 
-还有一个是关于`category`的问题，根据`YAML`的语法，我们在文章头部可以定义文章所属的类别，也可以定义为`category:[blog,rss]`这样子的多类别，我在本地试一切正常，但是push到GitHub之后，就无法读取了，真让人着急，没有办法，只能采用别的办法满足我的需求了。这里还有一篇[Jekyll 本地调试之若干问题][18]，安装中如果有其他问题，也可以对照参考一下。
 
 ## 结语
-如果你跟着这篇不那么详尽的教程，成功搭建了自己的博客，恭喜你！剩下的就是保持热情的去写自己的文章吧。
+如果依旧不成功，请你坚持一下，善用搜索引擎，发挥你的热情继续折腾。
 
-
-[BeiYuu]:    http://beiyuu.com  "BeiYuu"
+[廖雪峰]:   https://www.liaoxuefeng.com/ "廖雪峰"
+[Eggward]:    http://eggwardhan.com  "eggward"
 [Github]:   http://github.com "Github"
 [jQuery]:   https://github.com/jquery/jquery "jQuery@github"
 [Twitter]:  https://github.com/twitter/bootstrap "Twitter@github"
@@ -351,7 +278,7 @@ Google的高亮插件使用也比较方便，只需要在`<pre>`的标签上加�
 [4]: http://progit.org/book/zh/ "Pro Git中文版"
 [5]: http://help.github.com/mac-set-up-git/ "Mac下Git安装"
 [6]: http://help.github.com/ssh-key-passphrases/
-[7]: http://beiyuu.github.io
+[7]: http://eggwardhan.github.io
 [8]: https://github.com/mojombo/jekyll/blob/master/README.textile
 [9]: https://github.com/mojombo/jekyll/wiki/YAML-Front-Matter
 [10]: https://github.com/mojombo/jekyll/wiki/configuration
